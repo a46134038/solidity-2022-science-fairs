@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
 
@@ -11,15 +11,16 @@ contract token {
         uint amount;
     }
 
-
     mapping (address => uint) balance;
     mapping (address => TransferHistory[]) transferHistory;
 
-
-    function changeBalance(address addr,uint amount) public {
+    function setBalance(address addr,uint amount) public {
         balance[addr] = amount;
     }
 
+    function changeBalance(address addr,int amount) public {
+        balance[addr] += amount;
+    }
 
     function transfer(address addr,uint160 amount) public {
         require(balance[msg.sender] >= amount,"Your balance is not enough");
@@ -29,7 +30,8 @@ contract token {
     }
 
 
-  /*  function showLastTransferHistory(uint amount = 1) public view returns() {
+/*  
+    function showLastTransferHistory(uint amount = 1) public view returns() {
 
 
     }
@@ -42,6 +44,5 @@ contract token {
     function showBalance() public view returns(uint) {
         return balance[msg.sender];
     }
-
 
 }
