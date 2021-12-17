@@ -37,11 +37,20 @@ contract token {
         balance[msg.sender] -= amount;
         balance[addr] += amount;
         transferHistory[msg.sender].push(TransferHistory("transfer",msg.sender,addr,amount));
-        transferHistory[addr]a.push(TransferHistory("transfer",msg.sender,addr,amount));
+        transferHistory[addr].push(TransferHistory("transfer",msg.sender,addr,amount));
     }
   
-    function showLastTransferHistory() public view returns(TransferHistory[] memory) {
-        return transferHistory[msg.sender];
+    function showLastTransferHistory(uint amount) public view returns(TransferHistory[] memory) {
+
+        if(amount > transferHistory[msg.sender].length) {
+            amount = transferHistory[msg.sender].length;
+        }
+
+        TransferHistory[] memory data = new TransferHistory[](amount);
+        for(uint i = amount ; i > 0 ; i--) {
+            data[amount-i] = transferHistory[msg.sender][transferHistory[msg.sender].length-(amount-i+1)];
+        }
+        return data;
     }
 
     function showAllTransferHistory() public view returns(TransferHistory[] memory) {
