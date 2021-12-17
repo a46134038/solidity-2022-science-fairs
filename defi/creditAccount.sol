@@ -15,7 +15,7 @@ contract creditAccount {
     }
 
     function showAccountEquity() public view returns(int) {
-        return equity[msg.sender];
+        return liability[msg.sender];
     }
 
 }
