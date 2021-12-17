@@ -15,12 +15,12 @@ contract token {
     mapping (address => uint) balance;
     mapping (address => TransferHistory[]) transferHistory;
 
-    function setBalance(address addr,uint amount) public {
+    function setBalance(address addr,uint amount) public { // 設定帳戶餘額
         balance[addr] = amount;
         transferHistory[addr].push(TransferHistory("setBalance",address(this),addr,amount));
     }
 
-    function changeBalance(address addr,int amount) public {
+    function changeBalance(address addr,int amount) public { // 改變帳戶餘額
         int new_balance = int(balance[addr]) + amount;
         require(new_balance >= 0 ,"Your balance is not enough");
         balance[addr] = uint(new_balance);
@@ -32,7 +32,7 @@ contract token {
         }
     }
 
-    function transfer(address addr,uint160 amount) public {
+    function transfer(address addr,uint160 amount) public { // 轉帳
         require(balance[msg.sender] >= amount,"Your balance is not enough");
         balance[msg.sender] -= amount;
         balance[addr] += amount;
@@ -40,7 +40,7 @@ contract token {
         transferHistory[addr].push(TransferHistory("transfer",msg.sender,addr,amount));
     }
   
-    function showLastTransferHistory(uint amount) public view returns(TransferHistory[] memory) {
+    function showLastTransferHistory(uint amount) public view returns(TransferHistory[] memory) { // 查詢最後n筆交易
 
         if(amount > transferHistory[msg.sender].length) {
             amount = transferHistory[msg.sender].length;
@@ -53,16 +53,16 @@ contract token {
         return data;
     }
 
-    function showAllTransferHistory() public view returns(TransferHistory[] memory) {
+    function showAllTransferHistory() public view returns(TransferHistory[] memory) { // 查詢所有交易
         return transferHistory[msg.sender];
     }
 
 
-    function showBalance() public view returns(uint) {
+    function showBalance() public view returns(uint) { // 查詢帳戶餘額
         return balance[msg.sender];
     }
 
-    function getContractAddress() public view returns(address) {
+    function getContractAddress() public view returns(address) { // 獲取合約地址
         return address(this);
     }
 
