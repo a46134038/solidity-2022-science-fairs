@@ -3,15 +3,15 @@ pragma solidity ^0.8.7;
 
 contract creditAccount {
 
-    mapping (address => int) equity;
+    mapping (address => int) liability;
 
     function lend(uint amount) public {
 
-        equity[msg.sender] -= int(amount); 
+        liability[msg.sender] -= int(amount); 
     }
 
     function payDebt(uint amount) public {
-        equity[msg.sender] += int(amount);
+        liability[msg.sender] += int(amount);
     }
 
     function showAccountEquity() public view returns(int) {
