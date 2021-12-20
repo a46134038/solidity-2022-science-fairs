@@ -42,10 +42,11 @@ contract creditAccount {
 
     function getPoolLendTotal() public view returns(uint) { // 獲取質押池總借款量
         return stakePool.poolLendTotal;
+  
     }
 
-    function getInterestRate() public view returns(float) { // 獲取當前質押池利率
-        stakePool.poolStakeTotal / stakePool.poolLendTotal + 30;
+    function getInterestRate() public view returns(uint) { // 獲取當前質押池利率
+        return 300*stakePool.poolLendTotal / stakePool.poolStakeTotal; // 因 solidity 無浮點數 為保證計算的精準性所以出來的值為萬分比 須乘以 0.01% 才為百分比
     }
 
 }
