@@ -24,6 +24,7 @@ contract creditAccount {
         require(liability[msg.sender].balance >= amount,"Your balance is not enough");
         liability[msg.sender].stakeTotal += amount;
         stakePool.poolStakeTotal += amount;
+        liability[msg.sender].balance -= amount;
     }
 
     function redeem(uint amount) public { // 取消存款
@@ -38,6 +39,7 @@ contract creditAccount {
         require(stakePool.poolStakeTotal >= amount,"Stake pool balance is not enough");
         liability[msg.sender].lendTotal += amount;
         stakePool.poolLendTotal += amount;
+        liability[msg.sender].balance += amount;
     }
 
     function payDebt(uint amount) public { // 還款
