@@ -7,33 +7,43 @@ contract creditAccount {
         uint poolLendTotal;
         uint poolStakeTotal;
     }
+
+    struct Liability {
+        uint lendTotal;
+        uint stakeTotal;
+    }
     
-    mapping (address => int) liability;
+    mapping (address => Liability) liability; 
 
     StakePool stakePool;
 
     function stake(uint amount) public { // 存入現金賺取利息
-        liability[msg.sender] += int(amount);
+        require("");
+        liability[msg.sender].stakeTotal += amount;
         stakePool.poolStakeTotal += amount;
     }
 
     function redeem(uint amount) public { // 取消存款
-        liability[msg.sender] -= int(amount);
+        liability[msg.sender].stakeTotal -= amount;
         stakePool.poolStakeTotal -= amount;
     }
 
     function lend(uint amount) public { // 借款
-        liability[msg.sender] -= int(amount); 
+        liability[msg.sender].lendTotal += amount;
         stakePool.poolLendTotal += amount;
     }
 
     function payDebt(uint amount) public { // 還款
-        liability[msg.sender] += int(amount);
+        liability[msg.sender].lendTotal -= amount;
         stakePool.poolLendTotal -= amount;
     }
 
-    function showAccountEquity() public view returns(int) { // 顯示帳戶權益
-        return liability[msg.sender];
+    function showAccountDebtTotal() public view returns(uint) { // 顯示帳戶負債
+        return liability[msg.sender].lendTotal;
+    }
+
+    function showAccountStakeTotal() public view returns(uint) { // 顯示帳戶存款
+        return liability[msg.sender].stakeTotal;
     }
 
     function getPoolStakeTotal() public view returns(uint) { // 獲取質押池總存款量
