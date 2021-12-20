@@ -2,31 +2,50 @@
 pragma solidity ^0.8.7;
 
 contract creditAccount {
-
-    mapping (address => int) liability;
     
-    uint stakePool;
-
-    function lend(uint amount) public {
-        liability[msg.sender] -= int(amount); 
-        stakePool -= amount;
+    struct StakePool {
+        uint poolLendTotal;
+        uint poolStakeTotal;
     }
+    
+    mapping (address => int) liability;
 
-    function payDebt(uint amount) public {
+    StakePool stakePool;
+
+    function stake(uint amount) public { // 存入現金賺取利息
         liability[msg.sender] += int(amount);
-        stakePool += amount;
+        stakePool.poolStakeTotal += amount;
     }
 
-    function showAccountEquity() public view returns(int) {
+    function redeem(uint amount) public { // 取消存款
+        liability[msg.sender] -= int(amount);
+        stakePool.poolStakeTotal -= amount;
+    }
+
+    function lend(uint amount) public { // 借款
+        liability[msg.sender] -= int(amount); 
+        stakePool.poolLendTotal += amount;
+    }
+
+    function payDebt(uint amount) public { // 還款
+        liability[msg.sender] += int(amount);
+        stakePool.poolLendTotal -= amount;
+    }
+
+    function showAccountEquity() public view returns(int) { // 顯示帳戶權益
         return liability[msg.sender];
     }
 
-    function getPoolSize() public view returns(uint) {
-        return stakePool;
+    function getPoolStakeTotal() public view returns(uint) { // 獲取質押池總存款量
+        return stakePool.poolStakeTotal;
     }
 
-    function getInterestRate() public view returns(uint) {
-        
+    function getPoolLendTotal() public view returns(uint) { // 獲取質押池總借款量
+        return stakePool.poolLendTotal;
+    }
+
+    function getInterestRate() public view returns(float) { // 獲取當前質押池利率
+        stakePool.poolStakeTotal / stakePool.poolLendTotal + 30;
     }
 
 }
