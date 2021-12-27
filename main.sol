@@ -2,25 +2,37 @@
 pragma solidity ^0.8.7;
 
 
-import "token/token.sol";
+import "defi/test.sol";
 
 
-contract bank is token {
+contract bank is creditAccount {
 
+    uint count;
+    uint timeInterval = 86400; // 定期維護(股息、利息、清算....)時間 單位是秒
+    uint lastTimeStamp; // 上個維護的時間
 
-    uint a;
-
-
-    constructor() {
-        a = 15;
-
-
+    constructor(){
+        lastTimeStamp = block.timestamp;
     }
 
+    function checkUpkeep(bytes calldata checkData) public view returns(bool, bytes memory) {
+        if(block.timestamp - lastTimeStamp >= timeInterval) {
 
-    function print() public view returns(uint) {
-        return a;
+        }
+        return (block.timestamp - lastTimeStamp >= timeInterval , bytes(""));
     }
 
+    function performUpkeep(bytes calldata performData) public {
+        lastTimeStamp = block.timestamp;
+        count++;
+    }
+
+    function time() public view returns(bool,bytes memory) {
+        return ((block.timestamp - timeInterval > lastTimeStamp) || (block.timestamp % 86400 < 120) , bytes(""));
+    }
+
+    function counter() public view returns(uint) {
+        return count;
+    }
 
 }
