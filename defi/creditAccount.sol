@@ -51,6 +51,10 @@ contract creditAccount {
         liability[msg.sender].interestExpense = 0;
     }
 
+    function showAccountBalance() public view returns(uint) {
+        return liability[msg.sender].balance;
+    }
+
     function showAccountDebtTotal() public view returns(uint) { // 顯示帳戶負債
         return liability[msg.sender].lendTotal;
     }
@@ -71,5 +75,7 @@ contract creditAccount {
     function getInterestRate() public view returns(uint) { // 獲取當前質押池利率
         return 300*stakePool.poolLendTotal / stakePool.poolStakeTotal; // 因 solidity 無浮點數 為保證計算的精準性所以出來的值為萬分比 須乘以 0.01% 才為百分比
     }
+
+
 
 }
