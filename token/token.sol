@@ -13,7 +13,7 @@ contract token {
     }
 
     mapping (address => uint) balance;
-    mapping (address => TransferHistory[]) transferHistory;
+    mapping (address => TransferHistory[]) private transferHistory;
 
     function setBalance(address addr,uint amount) public { // 設定帳戶餘額
         balance[addr] = amount;
@@ -39,7 +39,7 @@ contract token {
         transferHistory[msg.sender].push(TransferHistory("transfer",msg.sender,addr,amount));
         transferHistory[addr].push(TransferHistory("transfer",msg.sender,addr,amount));
     }
-  
+
     function showLastTransferHistory(uint amount) public view returns(TransferHistory[] memory) { // 查詢最後n筆交易
 
         if(amount > transferHistory[msg.sender].length) {
