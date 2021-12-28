@@ -2,10 +2,11 @@
 pragma solidity ^0.8.7;
 
 
-import "defi/test.sol";
+import "token/token.sol";
+import "defi/creditAccount.sol";
+import "defi/equity.sol";
 
-
-contract bank is creditAccount {
+contract bank is token,creditAccount,equity {
 
     uint count;
     uint timeInterval = 86400; // 定期維護(股息、利息、清算....)時間 單位是秒
@@ -13,6 +14,18 @@ contract bank is creditAccount {
 
     constructor(){
         lastTimeStamp = block.timestamp;
+    }
+
+    function transferToCreditAccount(uint amount) public {
+        require(balance[msg.sender] >= amount,"Your balance is not enough");
+        balance[msg.sender] -= amount;
+        creditAccount.liability[msg.sender].balance += amount;
+    }
+
+    function transferToGeneralAccount(uint amount) public {
+        require(creditAccount.liability[msg.sender].balance >= amount,"Your balance is not enough");
+        creditAccount.liability[msg.sender].balance -= amount;
+        balance[msg.sender] += amount;
     }
 
     function checkUpkeep(bytes calldata checkData) public view returns(bool, bytes memory) {
