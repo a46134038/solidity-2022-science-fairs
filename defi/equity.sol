@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 contract equity {
     
     struct Proposal {
+        uint proposalNumber;
         string proposalName;
         string proposalInfo;
         uint disagreeCount;
@@ -52,19 +53,26 @@ contract equity {
     }
 
     function propose(string memory proposalName,string memory proposalInfo) public {
-        require(lastProposeTimeStamp[msg.sender] > block.timestamp-(block.timestamp%86400)+(86400*7),"You have already proposed , Please wait for 7 days to propose again");
-
-        proposal.push(Proposal(proposalName,proposalInfo,0,0,block.timestamp,block.timestamp-(block.timestamp%86400)+(86400*30)));
+        require(block.timestamp - lastProposeTimeStamp[msg.sender] > 86400*7,"You have already proposed , Please wait for 7 days to propose again");
+        proposal.push(Proposal(proposal.length,proposalName,proposalInfo,0,0,block.timestamp,block.timestamp-(block.timestamp%86400)+(86400*30)));
         lastProposeTimeStamp[msg.sender] = block.timestamp;
     }
 
     function showAllActiveProposal() view public returns(Proposal[] memory) {
 
-        Proposal[] memory data = new Proposal[](proposal.length);
         uint amount = proposal.length;
-        while(amount-->0){
-            if(proposal[amount].proposalDeadline > block.timestamp) {
-                data.push(proposal[amount]);
+        uint activeProposalCount = 0;
+
+        for(uint i=0;i<amount;i++) {
+            if(proposal[i].proposalDeadline > block.timestamp) {
+                activeProposalCount++;
+            }
+        }
+
+        Proposal[] memory data = new Proposal[](activeProposalCount);
+        for(uint i=0;i<amount;i++) {
+            if(proposal[i].proposalDeadline > block.timestamp) {
+                data[--activeProposalCount] = proposal[i];
             }
         }
         return data;
@@ -74,9 +82,13 @@ contract equity {
         return proposal;
     }
 
-    /*function vote() public {
+    function vote(uint proposalNumber,uint8 choose) public {
+        if() {
 
-    }*/
+        }
+        
+        shares[msg.sender]
+    }
 
     function equityShowLastTransferHistory(uint amount) public view returns(EquityTransferHistory[] memory) { // 查詢最後n筆交易
         if(amount > transferHistory[msg.sender].length) {
