@@ -25,10 +25,12 @@ contract equity {
     }
 
     mapping (address => uint) shares;
-    mapping (address => EquityTransferHistory[]) private transferHistory;
+    mapping (address => uint) shareHolderToIndex;
     mapping (address => uint) lastProposeTimeStamp;
+    mapping (address => EquityTransferHistory[]) private transferHistory;
 
     uint supply = 0;
+    address shareHolderList[];
     Proposal[] proposal;
 
     function equityTransfer(address addr,uint amount) public { // 股權過戶
@@ -37,11 +39,20 @@ contract equity {
         shares[addr] += amount;
         transferHistory[msg.sender].push(EquityTransferHistory("Transfer",msg.sender,addr,amount));
         transferHistory[addr].push(EquityTransferHistory("Transfer",msg.sender,addr,amount));
+
+        if(shares[msg.sender] == 0 && shareHolderToIndex[addr] > 0) {
+            shareHolderList.
+        }
+        if(shares[addr] > 0 && shareHolderToIndex[addr] == 0) {
+            shareHolderList.push(addr);
+            shareHolderToIndex[addr] = shareHolderList.length - 1;
+        }
     }
 
     function equityMint(address addr,uint amount) public { // 股權鑄造
         shares[addr] += amount;
         supply += amount;
+        shareHolderList.push(addr);
         transferHistory[addr].push(EquityTransferHistory("Mint",address(0),addr,amount));
     }
 
@@ -56,6 +67,29 @@ contract equity {
         require(block.timestamp - lastProposeTimeStamp[msg.sender] > 86400*7,"You have already proposed , Please wait for 7 days to propose again");
         proposal.push(Proposal(proposal.length,proposalName,proposalInfo,0,0,block.timestamp,block.timestamp-(block.timestamp%86400)+(86400*30)));
         lastProposeTimeStamp[msg.sender] = block.timestamp;
+    }
+
+    
+
+
+    function vote(uint proposalNumber,uint8 choose) public {
+        if() {
+
+        }
+        
+        shares[msg.sender];
+    }
+
+    function payDividends() internal {
+        uint dividendsTotal = token.balance[address(this)]*payoutRatio;
+        token.balance[address(this)] -= dividendsTotal;
+        for() {
+
+        }
+    }
+
+    function showAllProposal() public view returns(Proposal[] memory) {
+        return proposal;
     }
 
     function showAllActiveProposal() view public returns(Proposal[] memory) {
@@ -78,17 +112,6 @@ contract equity {
         return data;
     }
 
-    function showAllProposal() public view returns(Proposal[] memory) {
-        return proposal;
-    }
-
-    function vote(uint proposalNumber,uint8 choose) public {
-        if() {
-
-        }
-        
-        shares[msg.sender]
-    }
 
     function equityShowLastTransferHistory(uint amount) public view returns(EquityTransferHistory[] memory) { // 查詢最後n筆交易
         if(amount > transferHistory[msg.sender].length) {
@@ -114,5 +137,4 @@ contract equity {
     function equityShowTotalSupply() public view returns(uint) { // 查詢總流通股權
         return supply;
     }
-
 }
